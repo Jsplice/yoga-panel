@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yoga Panel – Dokumentation</title>
+<meta name="description" content="Installation, Bedienung, Kommandozeile und Technik von Yoga Panel für das Lenovo Yoga 7 2-in-1.">
+<meta name="theme-color" content="#101014">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238e7cff'/%3E%3Cstop offset='1' stop-color='%2340c8ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M18 5 9 18h6l-2 9 9-13h-6z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8e7cff"/><stop offset="1" stop-color="#40c8ff"/></linearGradient></defs>
+  <symbol id="logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M18 5 9 18h6l-2 9 9-13h-6z" fill="#fff"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><svg class="logo"><use href="#logo"/></svg>Yoga Panel</a>
+    <nav class="links">
+      <a href="./">Übersicht</a>
+      <a href="https://github.com/Jsplice/yoga-panel/releases/latest/download/YogaPanel.zip">Download</a>
+      <a href="https://github.com/Jsplice/yoga-panel">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap doc">
+  <aside class="toc">
+    <b>Inhalt</b>
+    <a href="#installation">Installation</a>
+    <a href="#app">Die App</a>
+    <a class="sub2" href="#diagramme">Diagramme</a>
+    <a class="sub2" href="#programme">Programmliste</a>
+    <a class="sub2" href="#schalter">Schalter</a>
+    <a class="sub2" href="#tray">Tray und Autostart</a>
+    <a href="#befehle">Kommandozeile</a>
+    <a class="sub2" href="#live">Live-Monitor</a>
+    <a href="#modi">Modi erklärt</a>
+    <a href="#admin">Admin-Rechte</a>
+    <a href="#daten">Gespeicherte Daten</a>
+    <a href="#technik">Technik</a>
+    <a href="#bauen">Selbst bauen</a>
+    <a href="#probleme">Probleme lösen</a>
+    <a href="#deinstallation">Deinstallation</a>
+  </aside>
+
+  <article class="content">
+    <h1>Dokumentation</h1>
+    <p>Yoga Panel besteht aus zwei Programmen, die zusammengehören:</p>
+    <ul>
+      <li><code>YogaPanel.exe</code> – die App mit Fenster, Diagrammen und Tray-Symbol.</li>
+      <li><code>yoga.exe</code> – die Kommandozeile. Die App nutzt sie auch für Aktionen, die Admin-Rechte brauchen.</li>
+    </ul>
+    <div class="callout warn"><p>Entwickelt und getestet auf dem <b>Lenovo Yoga 7 2-in-1 16ILL10</b> (Typ 83JT, Intel Core Ultra „Lunar Lake“). Auf anderen Lenovo-Geräten funktionieren einzelne Teile vermutlich auch, aber ungeprüft. Es ist kein offizielles Lenovo-Produkt.</p></div>
+
+    <h2 id="installation">Installation</h2>
+    <ol>
+      <li><a href="https://github.com/Jsplice/yoga-panel/releases/latest/download/YogaPanel.zip">YogaPanel.zip</a> herunterladen.</li>
+      <li>In einen festen Ordner entpacken, z. B. <code>C:\Tools\YogaPanel</code>. Beide EXE-Dateien müssen im selben Ordner liegen.</li>
+      <li><code>YogaPanel.exe</code> starten.</li>
+    </ol>
+    <p>Eine Installation gibt es nicht. Voraussetzung ist das .NET Framework 4.8, das in Windows 10 und 11 bereits enthalten ist. Der Lenovo-Treiber „Lenovo Energy Management“ (<code>AcpiVpc.sys</code>) wird über Windows Update installiert und ist auf dem Yoga normalerweise vorhanden.</p>
+    <div class="callout"><p><b>SmartScreen-Warnung:</b> Die Programme sind nicht digital signiert. Windows zeigt deshalb beim ersten Start „Der Computer wurde durch Windows geschützt“. Auf „Weitere Informationen“ und dann „Trotzdem ausführen“ klicken. Wer dem Download nicht traut, kann die Programme aus dem Quellcode <a href="#bauen">selbst bauen</a>.</p></div>
+    <p><b>Kommandozeile überall nutzen:</b> Den Ordner zur PATH-Variable hinzufügen, dann funktioniert <code>yoga</code> in jedem Terminal. In PowerShell geht das für den eigenen Benutzer so:</p>
+<pre><code>[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Tools\YogaPanel", "User")</code></pre>
+    <p>Danach ein neues Terminal öffnen.</p>
+    <p><b>Lenovo Vantage und Legion Toolkit</b> können parallel installiert bleiben. Wenn zwei Programme gleichzeitig den Modus setzen, gewinnt das, welches zuletzt geschrieben hat. Wer Yoga Panel als Ersatz nutzt, deinstalliert die anderen am besten.</p>
+
+    <h2 id="app">Die App</h2>
+    <p>Das Fenster hat oben eine Leiste mit <b>Aktualisierung</b> (0,5 s, 1 s, 2 s, 5 s) und <b>Zeitraum</b> (1 min bis 24 h). Beide gelten für alle Diagramme und werden gespeichert. Rechts stehen Akku und alle Schalter, unten die Programmliste. Größe und Position des Fensters merkt sich die App.</p>
+
+    <h3 id="diagramme">Diagramme</h3>
+    <div class="tablebox"><table>
+      <thead><tr><th>Diagramm</th><th>Inhalt</th></tr></thead>
+      <tbody>
+        <tr><td>Auslastung</td><td><span class="dot" style="background:var(--violet)"></span>CPU und <span class="dot" style="background:var(--cyan)"></span>GPU in Prozent, darunter der aktuelle CPU-Takt.</td></tr>
+        <tr><td>Arbeitsspeicher</td><td>Belegter RAM in GB. Die Achse reicht bis zum eingebauten Speicher. Darunter ein eigener Streifen für <b>Paging</b> in MB/s – also wie viel Windows gerade zwischen RAM und SSD verschiebt. Unter dem Wert stehen Commit (zugesagter Speicher inkl. Auslagerungsdatei) und die Belegung der Auslagerungsdatei.</td></tr>
+        <tr><td>Leistungsaufnahme</td><td>Chip-Leistung in Watt, gestapelt: <span class="dot" style="background:var(--violet)"></span>Kerne, <span class="dot" style="background:var(--cyan)"></span>GPU, <span class="dot" style="background:var(--slate,#7882a0)"></span>restlicher SoC und <span class="dot" style="background:var(--orange)"></span>RAM. Im Akkubetrieb zusätzlich die Entladeleistung des Akkus (ganzes Gerät inkl. Display).</td></tr>
+        <tr><td>Temperatur</td><td>Chip-Temperatur in °C.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Mit der Maus über einem Diagramm siehst du die Werte zu diesem Zeitpunkt samt Uhrzeit. Bei Zeiträumen ab 1 h zeigen die Diagramme Minutenmittel. Diese werden 48 h lang gespeichert und überstehen Neustarts. Die feinen Einzelwerte für 1 bis 15 Minuten liegen nur im Speicher.</p>
+
+    <h3 id="programme">Programmliste</h3>
+    <ul>
+      <li><b>Live</b>: Programme nach geschätzter Leistung. Gleichnamige Prozesse werden zusammengefasst (<code>svchost ×98</code>). Die Watt-Zahl ist eine Schätzung: die gemessene Kern- und GPU-Leistung, anteilig nach Auslastung verteilt.</li>
+      <li><b>24 h</b>: der Energieverbrauch pro App laut Windows („System Resource Usage Monitor“) über die letzten 24 Stunden. Windows gibt diese Daten nur mit Admin-Rechten heraus, deshalb fragt die App einmal per UAC nach.</li>
+    </ul>
+
+    <h3 id="schalter">Schalter</h3>
+    <div class="tablebox"><table>
+      <thead><tr><th>Schalter</th><th>Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td>Leistungsmodus</td><td>Akku sparen, Intelligent, Extrem. Entspricht <kbd>Fn</kbd>+<kbd>Q</kbd> und setzt den passenden Windows-Energiemodus.</td></tr>
+        <tr><td>Lademodus</td><td>Normal, Schonen (Ladung stoppt bei ~80 %), Schnell.</td></tr>
+        <tr><td>Display</td><td>60 oder 120 Hz fürs interne Display.</td></tr>
+        <tr><td>Tastaturlicht</td><td>Aus, Stufe 1, Stufe 2, Auto.</td></tr>
+        <tr><td>Helligkeit</td><td>Bildschirmhelligkeit 0–100 %.</td></tr>
+        <tr><td>Fn-Lock</td><td>An: F1–F12 ohne <kbd>Fn</kbd>. Aus: Medientasten ohne <kbd>Fn</kbd>.</td></tr>
+        <tr><td>USB-Laden</td><td>USB-Anschluss lädt Geräte auch, wenn der Laptop aus ist oder schläft.</td></tr>
+        <tr><td>Touchscreen / Stift / Touchpad</td><td>Schaltet das jeweilige Eingabegerät ab oder an (Admin-Freigabe).</td></tr>
+        <tr><td>CPU-Turbo auf Akku</td><td>Aus spart im Akkubetrieb deutlich Strom, kostet aber Spitzenleistung.</td></tr>
+        <tr><td>Mit Windows starten</td><td>Startet die App beim Anmelden direkt im Tray.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Die App liest den Zustand laufend nach. Wenn du den Modus per <kbd>Fn</kbd>+<kbd>Q</kbd> wechselst, springt die Anzeige nach wenigen Sekunden mit.</p>
+
+    <h3 id="tray">Tray und Autostart</h3>
+    <p>Das Schließen-Kreuz versteckt das Fenster nur, die App läuft im Infobereich weiter. Das Tray-Symbol zeigt die aktuelle Chip-Leistung in Watt. Die Farbe steht für den Modus: <span style="color:var(--green)">grün</span> Akku sparen, weiß Intelligent, <span style="color:var(--orange)">orange</span> Extrem. Darunter zeigt ein Balken den Akkustand.</p>
+    <ul>
+      <li><b>Linksklick</b> öffnet oder versteckt das Fenster.</li>
+      <li><b>Rechtsklick</b> bietet Modus, Lademodus und „Beenden“.</li>
+    </ul>
+    <p>Solange das Fenster versteckt ist, misst die App sparsamer (höchstens alle 2 s, ohne Prozessliste) und braucht etwa 0,2 % eines CPU-Kerns. Der Verlauf läuft trotzdem weiter. „Mit Windows starten“ trägt <code>YogaPanel.exe --tray</code> im Benutzer-Autostart ein. Die App lässt sich nur einmal starten; ein zweiter Start holt das vorhandene Fenster nach vorn.</p>
+
+    <h2 id="befehle">Kommandozeile</h2>
+    <p><code>yoga hilfe</code> zeigt die Übersicht. Statt der deutschen Wörter gehen auch englische (<code>on/off</code>, <code>quiet/balanced/performance</code>).</p>
+    <div class="tablebox"><table>
+      <thead><tr><th>Befehl</th><th>Wirkung</th></tr></thead>
+      <tbody>
+        <tr><td colspan="2" style="color:var(--cyan)">Übersicht</td></tr>
+        <tr><td><code>yoga</code></td><td>Alles auf einen Blick: Akku, Modi, Leistung, CPU, Speicher, Display, Eingabegeräte.</td></tr>
+        <tr><td><code>yoga live [sek]</code></td><td>Live-Monitor im Terminal, siehe unten.</td></tr>
+        <tr><td><code>yoga top [anzahl]</code></td><td>Programme nach CPU, GPU, RAM und geschätzten Watt (1 s Messung).</td></tr>
+        <tr><td><code>yoga apps [stunden] [--akku]</code></td><td>Energie pro App laut Windows. <code>--akku</code> zählt nur Zeit im Akkubetrieb. Admin.</td></tr>
+        <tr><td><code>yoga akku [--report]</code></td><td>Akku-Gesundheit, Zyklen, Spannung. <code>--report</code> öffnet den Windows-Akkubericht.</td></tr>
+        <tr><td colspan="2" style="color:var(--cyan)">Energie</td></tr>
+        <tr><td><code>yoga modus spar|auto|max</code></td><td>Lenovo-Leistungsmodus und passender Windows-Energiemodus. <code>--nur-lenovo</code> lässt Windows unverändert.</td></tr>
+        <tr><td><code>yoga winmodus effizienz|ausgeglichen|leistung</code></td><td>Nur den Windows-Energiemodus.</td></tr>
+        <tr><td><code>yoga laden normal|schonen|schnell</code></td><td>Lademodus.</td></tr>
+        <tr><td><code>yoga boost an|aus|effizient [--ac|--dc]</code></td><td>CPU-Turbo, für Netz (<code>--ac</code>), Akku (<code>--dc</code>) oder beides.</td></tr>
+        <tr><td><code>yoga cpumax 5-100 [--ac|--dc]</code></td><td>Maximale Prozessorleistung in Prozent.</td></tr>
+        <tr><td><code>yoga plan [name|nr]</code></td><td>Windows-Energiepläne anzeigen oder wechseln.</td></tr>
+        <tr><td colspan="2" style="color:var(--cyan)">Yoga-Hardware</td></tr>
+        <tr><td><code>yoga touch an|aus</code></td><td>Touchscreen. Admin.</td></tr>
+        <tr><td><code>yoga stift an|aus</code></td><td>Stift-Eingabe. Admin.</td></tr>
+        <tr><td><code>yoga touchpad an|aus</code></td><td>Touchpad. Admin.</td></tr>
+        <tr><td><code>yoga fnlock an|aus</code></td><td>Fn-Lock.</td></tr>
+        <tr><td><code>yoga tastatur aus|niedrig|hoch|auto</code></td><td>Tastaturbeleuchtung.</td></tr>
+        <tr><td><code>yoga usb an|aus</code></td><td>USB-Laden, wenn das Gerät aus ist oder schläft.</td></tr>
+        <tr><td><code>yoga hz [60|120|min|max]</code></td><td>Bildwiederholrate des internen Displays. Ohne Wert: aktuelle Rate und verfügbare Raten.</td></tr>
+        <tr><td><code>yoga hell [0-100]</code></td><td>Bildschirmhelligkeit.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Befehle ohne Wert zeigen den aktuellen Zustand, z. B. <code>yoga modus</code> oder <code>yoga laden</code>.</p>
+
+    <h3 id="live">Live-Monitor</h3>
+    <p><code>yoga live</code> aktualisiert alle 1,5 s (oder im angegebenen Abstand in Sekunden) Leistung, Auslastung, Speicher und die größten Verbraucher. Tasten:</p>
+    <div class="tablebox"><table>
+      <tbody>
+        <tr><td><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></td><td>Modus Akku sparen / Intelligent / Extrem</td></tr>
+        <tr><td><kbd>c</kbd></td><td>Lademodus durchschalten</td></tr>
+        <tr><td><kbd>h</kbd></td><td>60 / 120 Hz umschalten</td></tr>
+        <tr><td><kbd>k</kbd></td><td>Tastaturlicht durchschalten</td></tr>
+        <tr><td><kbd>f</kbd></td><td>Fn-Lock umschalten</td></tr>
+        <tr><td><kbd>t</kbd></td><td>Touchscreen umschalten</td></tr>
+        <tr><td><kbd>s</kbd></td><td>Sortierung der Programmliste ändern</td></tr>
+        <tr><td><kbd>q</kbd></td><td>Beenden</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="modi">Modi erklärt</h2>
+    <h3>Leistungsmodus</h3>
+    <p>Der Lenovo-Modus legt in der Firmware fest, wie viel Leistung der Chip ziehen darf und wie laut der Lüfter werden darf. Der Windows-Energiemodus steuert zusätzlich, wie schnell Windows den Takt hochfährt. Yoga Panel setzt beide passend:</p>
+    <div class="tablebox"><table>
+      <thead><tr><th>Lenovo-Modus</th><th>Windows-Energiemodus</th><th>Gedacht für</th></tr></thead>
+      <tbody>
+        <tr><td><span class="dot" style="background:var(--green)"></span>Akku sparen</td><td>Beste Energieeffizienz</td><td>Lange Laufzeit, leise</td></tr>
+        <tr><td><span class="dot" style="background:#fff"></span>Intelligent</td><td>Ausgeglichen</td><td>Alltag</td></tr>
+        <tr><td><span class="dot" style="background:var(--orange)"></span>Extrem</td><td>Beste Leistung</td><td>Kompilieren, Spiele, Export</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Lademodus</h3>
+    <ul>
+      <li><b>Normal</b> lädt bis 100 %.</li>
+      <li><b>Schonen</b> (Erhaltungsmodus) hält den Akku bei etwa 80 %. Das ist gut für die Lebensdauer, wenn der Laptop meist am Netz hängt.</li>
+      <li><b>Schnell</b> lädt mit höherem Strom. Schonen und Schnell schließen sich aus.</li>
+    </ul>
+
+    <h2 id="admin">Admin-Rechte</h2>
+    <p>Die meisten Funktionen laufen ohne Admin-Rechte. Ausnahmen:</p>
+    <ul>
+      <li><b>Touchscreen, Stift, Touchpad</b>: Windows erlaubt das Ab- und Anschalten von Geräten nur Administratoren.</li>
+      <li><b>Energie pro App</b> (<code>yoga apps</code>, Tab „24 h“): Die Windows-Energiedaten sind geschützt.</li>
+    </ul>
+    <p>In diesen Fällen fragt Windows per UAC nach. <code>yoga.exe</code> startet sich dann selbst mit erhöhten Rechten, führt nur diese eine Aktion aus und beendet sich wieder. Die App selbst läuft nie als Admin.</p>
+
+    <h2 id="daten">Gespeicherte Daten</h2>
+    <div class="tablebox"><table>
+      <thead><tr><th>Was</th><th>Wo</th></tr></thead>
+      <tbody>
+        <tr><td>Einstellungen (Aktualisierung, Zeitraum, Fenstergröße)</td><td><code>HKCU\Software\YogaPanel</code></td></tr>
+        <tr><td>Verlauf (Minutenmittel, 48 h)</td><td><code>%LOCALAPPDATA%\YogaPanel\history.bin</code></td></tr>
+        <tr><td>Autostart</td><td><code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code>, Eintrag <code>YogaPanel</code></td></tr>
+      </tbody>
+    </table></div>
+    <p>Yoga Panel sendet nichts ins Internet und hat keine Telemetrie.</p>
+
+    <h2 id="technik">Technik</h2>
+    <p>Alle Lenovo-Funktionen laufen über den Lenovo-Treiber <code>\\.\EnergyDrv</code> (<code>AcpiVpc.sys</code>). Er reicht Befehle an ACPI-Methoden der Firmware weiter. Diese Aufrufe brauchen keine Admin-Rechte. Auf diesem Gerät verifiziert:</p>
+    <div class="tablebox"><table>
+      <thead><tr><th>IOCTL</th><th>ACPI</th><th>Nutzung</th></tr></thead>
+      <tbody>
+        <tr><td><code>0x8310213C</code></td><td>DYTC</td><td>Leistungsmodus. GET = 2. SET: sparen <code>0x13B001</code>, max <code>0x12B001</code>, Standard <code>0x1FB001</code></td></tr>
+        <tr><td><code>0x831020F8</code></td><td>GBMD / SBMC</td><td>Lademodus. <code>0xFF</code> lesen (Bit 5 = schonen, Bit 2 = schnell). Setzen: 3/5 schonen an/aus, 7/8 schnell an/aus</td></tr>
+        <tr><td><code>0x831020E8</code></td><td>HALS / SALS</td><td>2 lesen (Bit 10 = Fn-Lock, Bit 7 = USB-Laden). <code>0x0E</code>/<code>0x0F</code> Fn-Lock an/aus, <code>0x0A</code>/<code>0x0B</code> USB an/aus</td></tr>
+        <tr><td><code>0x83102144</code></td><td>KBLC</td><td>Tastaturlicht. 1 = Typ abfragen, <code>2|Typ&lt;&lt;4</code> lesen, <code>3|Typ&lt;&lt;4|Stufe&lt;&lt;16</code> setzen (Typ 3: Stufen 0–3, 3 = auto)</td></tr>
+      </tbody>
+    </table></div>
+    <p>Die Legion-Schnittstellen (<code>LENOVO_GAMEZONE_DATA</code> und Co.) gibt es auf dem Yoga zwar, die Firmware implementiert sie aber nicht. Deshalb funktioniert das Legion Toolkit hier nur teilweise.</p>
+    <h3>Messwerte</h3>
+    <ul>
+      <li><b>Leistung</b>: Intel RAPL über die Windows-Leistungszähler „Energy Meter“ (Watt für SoC, Kerne, GPU und RAM).</li>
+      <li><b>Zähler</b> werden über PDH mit englischen Namen abgefragt und funktionieren daher unabhängig von der Systemsprache.</li>
+      <li><b>Prozesse</b> über <code>NtQuerySystemInformation</code> – ein Aufruf für alle Prozesse, ohne WMI.</li>
+      <li><b>Akku</b> direkt über die Akku-IOCTLs von Windows.</li>
+      <li><b>App-Energie</b> über <code>powercfg /srumutil</code>.</li>
+      <li><b>Speicher</b> über <code>GlobalMemoryStatusEx</code> sowie die Zähler „Paging File“ und „Memory\Pages/sec“.</li>
+      <li><b>Display</b> über <code>QueryDisplayConfig</code>/<code>ChangeDisplaySettingsEx</code>, Helligkeit über WMI.</li>
+      <li><b>Eingabegeräte</b> werden über SetupAPI gefunden (nur interne I²C-Geräte) und mit <code>pnputil</code> geschaltet.</li>
+    </ul>
+    <h3>Aufbau des Quellcodes</h3>
+    <div class="tablebox"><table>
+      <tbody>
+        <tr><td><code>src/Native.cs</code></td><td>Alle Windows- und Lenovo-Schnittstellen</td></tr>
+        <tr><td><code>src/Sampler.cs</code></td><td>Messschleife, gemeinsam für App und Kommandozeile</td></tr>
+        <tr><td><code>src/Program.cs</code></td><td>Kommandozeile <code>yoga.exe</code></td></tr>
+        <tr><td><code>src/Panel/Ui.cs</code></td><td>Farben, Schriften und Bedienelemente der App</td></tr>
+        <tr><td><code>src/Panel/Charts.cs</code></td><td>Verlauf, Diagramme, Akku und Programmliste</td></tr>
+        <tr><td><code>src/Panel/MainForm.cs</code></td><td>Fenster, Layout, Tray und Aktionen</td></tr>
+      </tbody>
+    </table></div>
+    <p>Die App zeichnet alles selbst mit WinForms/GDI+, ohne externe Bibliotheken.</p>
+
+    <h2 id="bauen">Selbst bauen</h2>
+    <p>Es muss nichts installiert werden. <code>build.cmd</code> nutzt den C#-Compiler, der mit dem .NET Framework in Windows mitkommt:</p>
+<pre><code>git clone https://github.com/Jsplice/yoga-panel.git
+cd yoga-panel
+build.cmd</code></pre>
+    <p>Danach liegen <code>yoga.exe</code> und <code>YogaPanel.exe</code> im Projektordner. Läuft die App gerade, vorher über das Tray-Menü beenden, sonst kann die Datei nicht überschrieben werden.</p>
+
+    <h2 id="probleme">Probleme lösen</h2>
+    <h3>„EnergyDrv-Treiber fehlt“ oder Modi lassen sich nicht setzen</h3>
+    <p>Der Lenovo-Treiber fehlt. Im Geräte-Manager unter „Systemgeräte“ nach „Lenovo Energy Management“ suchen bzw. über Windows Update oder die Lenovo-Supportseite nachinstallieren.</p>
+    <h3>Leistungsdiagramm bleibt leer</h3>
+    <p>Die Zähler „Energy Meter“ fehlen. Sie gibt es nur auf Intel-Geräten mit aktuellem Windows. Ein Neustart nach Windows-Updates hilft oft.</p>
+    <h3>Der Modus springt von allein zurück</h3>
+    <p>Meist setzt ein anderes Programm (Vantage, Legion Toolkit, ein Lenovo-Dienst) den Modus neu. Diese Programme beenden oder deinstallieren.</p>
+    <h3>Touchscreen-Schalter reagiert nicht</h3>
+    <p>Die UAC-Abfrage wurde abgelehnt oder ist hinter dem Fenster aufgegangen. Nochmals schalten und die Abfrage bestätigen.</p>
+
+    <h2 id="deinstallation">Deinstallation</h2>
+    <ol>
+      <li>„Mit Windows starten“ ausschalten.</li>
+      <li>Die App über das Tray-Menü beenden und den Ordner löschen.</li>
+      <li>Optional <code>%LOCALAPPDATA%\YogaPanel</code> und <code>HKCU\Software\YogaPanel</code> entfernen.</li>
+    </ol>
+    <p>Die Modi bleiben so, wie sie zuletzt eingestellt waren. Sie gehören der Firmware, nicht der App.</p>
+  </article>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Yoga Panel · MIT-Lizenz · kein offizielles Lenovo-Produkt</span>
+    <span><a href="./">Übersicht</a> · <a href="https://github.com/Jsplice/yoga-panel/issues">Fehler melden</a></span>
+  </div>
+</footer>
+</body>
+</html>
