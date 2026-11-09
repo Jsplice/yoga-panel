@@ -1,6 +1,6 @@
 # Yoga Panel
 
-Schlanke Steuerzentrale für das **Lenovo Yoga 7 2-in-1 16ILL10** (Intel Lunar Lake). Ersetzt Lenovo Vantage und das Legion Toolkit: zwei kleine EXE-Dateien (~160 KB), kein Hintergrunddienst, kein Konto.
+Schlanke Steuerzentrale für das **Lenovo Yoga 7 2-in-1 16ILL10** (Intel Lunar Lake). Ersetzt Lenovo Vantage und das Legion Toolkit: zwei kleine EXE-Dateien (~340 KB), kein Hintergrunddienst, kein Konto.
 
 **[Übersicht](https://jsplice.github.io/yoga-panel/) · [Dokumentation](https://jsplice.github.io/yoga-panel/doku.html) · [Download](https://github.com/Jsplice/yoga-panel/releases/latest/download/YogaPanel.zip)**
 
