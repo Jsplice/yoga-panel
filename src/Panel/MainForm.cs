@@ -109,7 +109,7 @@ namespace YogaTool.Panel
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(Th.P(1160), Th.P(760));
             MinimumSize = new Size(Th.P(980), Th.P(680));
-            Icon = MakeAppIcon(64);
+            Icon = LoadAppIcon() ?? MakeAppIcon(64);
             int ww = ReadSetting("WinW", 0), wh = ReadSetting("WinH", 0);
             if (ww >= MinimumSize.Width && wh >= MinimumSize.Height) ClientSize = new Size(ww, wh);
             if (ReadSetting("WinMax", 0) == 1) WindowState = FormWindowState.Maximized;
@@ -607,6 +607,17 @@ namespace YogaTool.Panel
             string bt = t.Bat != null && t.Bat.Present ? " · Akku " + Fmt.N(t.Bat.Percent, 0) + " %" + (t.Bat.Discharging ? " (" + Fmt.N(-t.Bat.Rate / 1000.0, 1) + " W)" : t.Bat.Charging ? " lädt" : "") : "";
             string tip = "Yoga · Chip " + Fmt.N(t.Pkg, 1) + " W" + bt;
             tray.Text = tip.Length > 63 ? tip.Substring(0, 63) : tip;
+        }
+
+        // Eingebettetes app.ico mit allen Größen (16–256 px) für Fenster und Taskleiste
+        static Icon LoadAppIcon()
+        {
+            try
+            {
+                using (var s = typeof(MainForm).Assembly.GetManifestResourceStream("app.ico"))
+                    return s == null ? null : new Icon(s);
+            }
+            catch { return null; }
         }
 
         static Icon MakeAppIcon(int size)
